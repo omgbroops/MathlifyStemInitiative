@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mathlify Ad Creator</title>
+    <link rel="icon" type="image/png" href="res/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-1: #f4f7ff;
+        --bg-2: #eef4ff;
+        --text: #111827;
+        --muted: #4b5563;
+        --line: #ced8ea;
+        --accent: #266bf6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(640px 280px at 10% 0%, rgba(38, 107, 246, 0.12), transparent 70%),
+          radial-gradient(620px 240px at 90% 100%, rgba(145, 80, 255, 0.14), transparent 72%),
+          linear-gradient(180deg, var(--bg-1), var(--bg-2));
+        padding: 1rem;
+      }
+
+      .wrap {
+        width: min(920px, 100%);
+        margin: 0 auto;
+      }
+
+      .title {
+        margin: 0 0 0.35rem;
+        font-family: "Space Grotesk", "Plus Jakarta Sans", sans-serif;
+        font-size: clamp(1.2rem, 2.2vw, 1.75rem);
+      }
+
+      .subtitle {
+        margin: 0 0 1rem;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .canvas-shell {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #ffffff;
+        box-shadow: 0 20px 42px rgba(16, 34, 62, 0.12);
+        padding: 0.8rem;
+      }
+
+      canvas {
+        width: 100%;
+        max-width: 500px;
+        display: block;
+        margin: 0 auto;
+        border-radius: 12px;
+        border: 1px solid #d4deef;
+        background: #eef3ff;
+      }
+
+      .controls {
+        margin-top: 0.9rem;
+        display: grid;
+        gap: 0.7rem;
+      }
+
+      label {
+        font-weight: 700;
+        font-size: 0.88rem;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 130px;
+        resize: vertical;
+        border: 1px solid #c8d5ec;
+        border-radius: 12px;
+        padding: 0.75rem 0.82rem;
+        font: inherit;
+        line-height: 1.5;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: #8aa8e5;
+        box-shadow: 0 0 0 4px rgba(56, 122, 244, 0.18);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
+
+      button {
+        border: 0;
+        border-radius: 11px;
+        padding: 0.72rem 1rem;
+        cursor: pointer;
+        font-family: inherit;
+        font-weight: 700;
+        transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-primary {
+        color: #ffffff;
+        background: linear-gradient(130deg, #266bf6, #6a52ea, #d44874);
+        box-shadow: 0 14px 24px rgba(72, 68, 166, 0.35);
+      }
+
+      .btn-secondary {
+        color: #21446a;
+        border: 1px solid #bfcee9;
+        background: #f6faff;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.55rem;
+      }
+
+      .snap-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 11px;
+        border: 1px solid #c8d5ec;
+        background: #f8fbff;
+        font-size: 0.86rem;
+        font-weight: 700;
+        color: #25486f;
+      }
+
+      .snap-toggle input {
+        width: 17px;
+        height: 17px;
+      }
+
+      .hint {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .hidden-input {
+        display: none;
+      }
+
+      .text-panel {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 20;
+        width: min(360px, calc(100% - 1rem));
+        padding: 0.55rem;
+        border-radius: 12px;
+        border: 1px solid #bed0ec;
+        background: rgba(252, 255, 255, 0.95);
+        backdrop-filter: blur(7px);
+        box-shadow: 0 16px 34px rgba(28, 58, 96, 0.18);
+        transform: translateX(-50%);
+      }
+
+      .text-panel h3 {
+        margin: 0 0 0.45rem;
+        font-size: 0.82rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #3c5f8c;
+      }
+
+      .text-panel textarea {
+        min-height: 72px;
+      }
+
+      .panel-grid {
+        margin-top: 0.5rem;
+        display: grid;
+        gap: 0.45rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .field {
+        display: grid;
+        gap: 0.3rem;
+      }
+
+      .field label {
+        margin: 0;
+        font-size: 0.76rem;
+        color: #31557d;
+      }
+
+      .field input[type="range"],
+      .field input[type="number"],
+      .field input[type="color"],
+      .field select {
+        width: 100%;
+        border: 1px solid #c8d5ec;
+        border-radius: 8px;
+        background: #fbfdff;
+        font: inherit;
+      }
+
+      .field input[type="range"] {
+        padding: 0.2rem;
+      }
+
+      .field input[type="number"],
+      .field select {
+        padding: 0.34rem 0.45rem;
+        font-size: 0.86rem;
+      }
+
+      .field input[type="color"] {
+        min-height: 34px;
+        padding: 0.18rem;
+      }
+
+      .mini-inline {
+        display: grid;
+        grid-template-columns: 1fr 72px;
+        gap: 0.4rem;
+      }
+
+      @media (max-width: 760px) {
+        .text-panel {
+          width: calc(100% - 1rem);
+        }
+
+        .panel-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <h1 class="title">Instagram Ad Creator</h1>
+      <p class="subtitle">1080 x 1350 canvas with a built-in STEM/circuit background.</p>
+
+      <section class="canvas-shell">
+        <canvas id="adCanvas" width="1080" height="1350"></canvas>
+
+        <div id="textPanel" class="text-panel" hidden>
+          <h3>Selected Text</h3>
+          <textarea id="panelText" placeholder="Edit selected text"></textarea>
+          <div class="panel-grid">
+            <div class="field">
+              <label for="panelFontSize">Font size</label>
+              <div class="mini-inline">
+                <input id="panelFontSize" type="range" min="30" max="220" value="95" />
+                <input id="panelFontSizeNumber" type="number" min="30" max="220" value="95" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="panelAlign">Text align</label>
+              <select id="panelAlign">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="panelFill">Font color</label>
+              <input id="panelFill" type="color" value="#2f4aa8" />
+            </div>
+            <div class="field">
+              <label for="panelOutline">Outline</label>
+              <input id="panelOutline" type="color" value="#f0f6ff" />
+            </div>
+            <div class="field">
+              <label for="panelOutlineOpacity">Outline transparency</label>
+              <div class="mini-inline">
+                <input id="panelOutlineOpacity" type="range" min="0" max="100" value="100" />
+                <input id="panelOutlineOpacityNumber" type="number" min="0" max="100" value="100" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="panelOutlineSize">Outline size</label>
+              <div class="mini-inline">
+                <input id="panelOutlineSize" type="range" min="1" max="40" value="19" />
+                <input id="panelOutlineSizeNumber" type="number" min="1" max="40" value="19" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="panelOpacity">Transparency</label>
+              <div class="mini-inline">
+                <input id="panelOpacity" type="range" min="0" max="100" value="100" />
+                <input id="panelOpacityNumber" type="number" min="0" max="100" value="100" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="panelWeight">Font weight</label>
+              <select id="panelWeight">
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700" selected>700</option>
+                <option value="800">800</option>
+                <option value="900">900</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="panelFamily">Font family</label>
+              <select id="panelFamily">
+                <option value="space">Space Grotesk</option>
+                <option value="jakarta">Plus Jakarta Sans</option>
+                <option value="mix">Space + Jakarta</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="toolbar">
+            <button class="btn-secondary" id="addTextBtn" type="button">Add Text</button>
+            <button class="btn-secondary" id="addImageBtn" type="button">Add Image</button>
+            <button class="btn-secondary" id="layerDownBtn" type="button">Layer Down</button>
+            <button class="btn-secondary" id="layerUpBtn" type="button">Layer Up</button>
+            <button class="btn-secondary" id="deleteBtn" type="button">Delete</button>
+            <button class="btn-secondary" id="undoBtn" type="button">Undo</button>
+            <button class="btn-secondary" id="redoBtn" type="button">Redo</button>
+            <button class="btn-secondary" id="randomizeBgBtn" type="button">Randomize Background</button>
+            <label class="snap-toggle" for="snapToggle">
+              <input id="snapToggle" type="checkbox" checked />
+              Enable snapping
+            </label>
+            <button class="btn-secondary" id="refreshBtn" type="button">Refresh</button>
+            <button class="btn-primary" id="downloadBtn" type="button">Export PNG</button>
+          </div>
+
+          <input id="imageInput" class="hidden-input" type="file" accept="image/*" multiple />
+          <p class="hint">
+            Tip: Click objects to select. Drag to move, drag corners to resize. With snapping enabled,
+            objects snap to center and common guide lines. Shortcuts: Ctrl/Cmd+Z undo, Ctrl/Cmd+Shift+Z or Ctrl/Cmd+Y redo, Delete key removes selected object.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <script src="ad.js"></script>
+  </body>
+</html>
+
