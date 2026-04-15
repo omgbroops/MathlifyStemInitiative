@@ -1171,6 +1171,25 @@ textarea {
   object-position: center;
 }
 
+#team .cards-3 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+#team .team-card {
+  flex: 0 1 calc((100% - 2rem) / 3);
+  max-width: calc((100% - 2rem) / 3);
+  display: block;
+}
+
+#team .team-photo {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  margin: 0 0 0.9rem;
+}
+
 .donate-card {
   padding: clamp(1.3rem, 4vw, 2.2rem);
   text-align: left;
@@ -1402,6 +1421,11 @@ textarea {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  #team .team-card {
+    flex-basis: calc((100% - 1rem) / 2);
+    max-width: calc((100% - 1rem) / 2);
+  }
+
   .about-grid {
     grid-template-columns: 1fr;
   }
@@ -1472,6 +1496,11 @@ textarea {
   .why-grid,
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+
+  #team .team-card {
+    flex-basis: 100%;
+    max-width: 100%;
   }
 
   .hero-copy h1 {
