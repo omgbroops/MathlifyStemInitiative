@@ -353,6 +353,11 @@ textarea {
   margin-top: 0.4rem;
 }
 
+.mobile-menu a.mobile-donate,
+.mobile-menu a.mobile-donate:hover {
+  color: #fff;
+}
+
 .hero {
   overflow: hidden;
   padding-top: clamp(8.8rem, 10vw, 10.6rem);
@@ -1338,6 +1343,20 @@ textarea {
 .footer-nav a:hover,
 .footer-links a:hover {
   color: #7ed4cc;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.social-link svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.7;
 }
 
 [data-glow]::after {
